@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "scrape": "clear && casperjs scraper.js"
+    "start": "clear && casperjs app.js"
   },
   "author": "",
   "license": "ISC",
