@@ -1,0 +1,9 @@
+{
+    "host": {
+        "url": "https://www.coast-stores.com"
+    },
+    "selected": {
+        "location": "end",
+        "value": "number"
+    }
+}
