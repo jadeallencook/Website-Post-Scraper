@@ -21,7 +21,7 @@ To get started, all you need to do is configure your settings (config.json)!
 
 The "selected" object relies on two parameters:
 
-- Select (end/contains): Location of value in url
+- Location (end/contains): Location of value in url
 - Value (number/string): Unique value in url 
 
 Here's a couple examples of how you would configure for a url with no numbers:
@@ -35,7 +35,7 @@ Here's a couple examples of how you would configure for a url with no numbers:
 
 // https://www.store.com/products/123123123/item
 {
-    "location": "ends-with",
+    "location": "end",
     "value": "/item"
 }
 ```
