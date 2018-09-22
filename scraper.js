@@ -6,28 +6,25 @@
 
 (function () {
 
+    // dependencies
     var casper = require('casper').create(),
-        fs = require('fs'),
-        config = require('./config.json'),
-        host = {
-            url: config.host.url,
-            links: {
-                visited: [],
-                cache: [],
-                products: [],
-                queued: 0
-            }
-        }
+        fs = require('fs');
+
+    // modules
+    var backup = require('./modules/backup'),
+        sync = require('./modules/sync');
+
+    // config
+    var config = require('./config.json'),
+        host = require('./modules/host');
+    host.url = config.host.url;
 
     function write() {
-        var json = {
+        backup.now({
             visited: host.links.visited,
             cache: host.links.cache,
             products: host.links.products
-        }
-        json = JSON.stringify(json);
-        fs.write(outputPath, json, 'w');
-        console.log(filter.domain(host.url) + ': \x1b[32msaved json\x1b[0m (exports/' + filter.domain(host.url) + '.json)');
+        });
     }
 
     var scrape = {
@@ -80,7 +77,6 @@
         fs.write(outputPath, JSON.stringify({}), 'w');
     }
     var output = require(outputPath);
-    fs.write('./exports/' + filter.domain(host.url) + '-backup.json', JSON.stringify(output), 'w');
     if (output.visited) {
         host.links.visited = output.visited;
     }
@@ -91,10 +87,14 @@
         host.links.products = output.products;
     }
 
-    console.log(filter.domain(host.url) + ': starting up \x1b[36m(vroom vroom)\x1b[0m...');
+    // other config
+    var print = require('./modules/print');
+    print.prefix = filter.domain(host.url);
+    backup.filename = filter.domain(host.url);
+
     casper.start(host.url).then(function () {
 
-        console.log(filter.domain(host.url) + ': \x1b[32msuccessfully connected!\x1b[0m\n');
+        print.message('successfully connected\n', 'successfully', 'green');
         var links = this.evaluate(scrape.links);
         host.links.cache = host.links.cache.concat(filter.links(links));
 
@@ -106,14 +106,14 @@
                 host.links.cache = host.links.cache.concat(filter.links(links));
                 host.links.visited.push(href);
                 host.links.cache.splice(host.links.cache.indexOf(href), 1);
-                console.log(filter.domain(host.url) + ': ' + link);
-                console.log(filter.domain(host.url) + ': \x1b[36m' + host.links.products.length + '\x1b[0m product pages saved');
+                print.message(link);
+                print.message(host.links.products.length + ' pages saved', host.links.products.length, 'green');
             }).then(function () {
                 host.links.queued = host.links.cache.length;
                 write();
-                console.log(filter.domain(host.url) + ': \x1b[33m' + host.links.cache.length + ' links left\x1b[0m\n');
+                print.message(host.links.cache.length + ' links left \n', host.links.cache.length, 'yellow');
                 if (host.links.queued === 0) {
-                    console.log(filter.domain(host.url) + ': could not find any more links, complete!\n');
+                    print.message('could not find any more links, complete!\n');
                     if (host.links.cache.length > 0) {
                         scrapeCachedLinks();
                     }
@@ -122,14 +122,16 @@
         }
 
         function scrapeCachedLinks() {
-            if (host.links.cache.length === 0) {
-                console.log(filter.domain(host.url) + ': looks like everything is \x1b[32mcomplete!\x1b[0m\n');
-            }
             for (var x = 0, max = host.links.cache.length; x < max; x++) {
                 gatherLinks(host.links.cache[x]);
             }
         }
-        scrapeCachedLinks();
+        if (host.links.cache.length === 0) {
+            print.message('no more links found\n', 'no more links found', 'yellow');
+        } else {
+            backup.now();
+            scrapeCachedLinks();
+        }
     });
 
     // init 
