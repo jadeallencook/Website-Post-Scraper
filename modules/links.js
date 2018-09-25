@@ -43,8 +43,12 @@ module.exports = {
                 }
                 if (saveable) {
                     host.links.products.push(link);
+                    if (config.selected.open) {
+                        array.push(link);
+                    }
+                } else {
+                    array.push(link);
                 }
-                array.push(link);
             }
         }
         return array;

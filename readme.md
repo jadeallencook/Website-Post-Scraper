@@ -14,15 +14,17 @@ To get started, all you need to do is configure your settings (config.json)!
     },
     "selected": {
         "location": "end",
-        "value": "number"
+        "value": "number",
+        "open": false
     }
 }
 ```
 
-The "selected" object relies on two parameters:
+The "selected" object relies on three parameters:
 
 - Location (end/contains): Location of value in url
 - Value (number/string): Unique value in url 
+- Open (boolean): Scrape selected pages too
 
 Here's a couple examples of how you would configure for a url with no numbers:
 
@@ -30,12 +32,14 @@ Here's a couple examples of how you would configure for a url with no numbers:
 // https://www.store.com/products/item/my-item
 {
     "location": "contains",
-    "value": "/products/item/"
+    "value": "/products/item/",
+    "open": false
 }
 
 // https://www.store.com/products/123123123/item
 {
     "location": "end",
-    "value": "/item"
+    "value": "/item",
+    "open": false
 }
 ```

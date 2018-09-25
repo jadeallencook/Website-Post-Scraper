@@ -14,8 +14,8 @@ module.exports = {
         casper.thenOpen(link, function () {
             links.cache(this.evaluate(links.extract));
             host.links.visited.push(href);
-            print.message(link);
-            print.message(host.links.products.length + ' pages saved', host.links.products.length, 'green');
+            print.message(href);
+            print.message(host.links.products.length + ' links saved', host.links.products.length, 'green');
         }).then(function () {
             backup.now(host.links);
             if (host.links.queued > 0) {
