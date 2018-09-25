@@ -20,24 +20,8 @@
         host = require('./modules/host');
     host.url = config.host.url;
 
-    function write() {
-        backup.now({
-            visited: host.links.visited,
-            cache: host.links.cache,
-            products: host.links.products
-        });
-    }
-
-    var filter = {
-        domain: function (url) {
-            url = url.replace('https://www.', '');
-            url = url.replace('.com', '');
-            return url;
-        }
-    }
-
     // import any data we have from site
-    var outputPath = './exports/' + filter.domain(host.url) + '.json';
+    var outputPath = './exports/' + host.name() + '.json';
     if (!fs.exists(outputPath)) {
         fs.write(outputPath, JSON.stringify({}), 'w');
     }
@@ -54,8 +38,8 @@
 
     // other config
     var print = require('./modules/print');
-    print.prefix = filter.domain(host.url);
-    backup.filename = filter.domain(host.url);
+    print.prefix = host.name();
+    backup.filename = host.name();
 
     casper.start(host.url).then(function () {
 
@@ -73,7 +57,11 @@
                 print.message(host.links.products.length + ' pages saved', host.links.products.length, 'green');
             }).then(function () {
                 host.links.queued = host.links.cache.length;
-                write();
+                backup.now({
+                    visited: host.links.visited,
+                    cache: host.links.cache,
+                    products: host.links.products
+                });
                 print.message(host.links.cache.length + ' links left \n', host.links.cache.length, 'yellow');
                 if (host.links.queued === 0) {
                     print.message('could not find any more links, complete!\n');
