@@ -17,51 +17,37 @@ module.exports = {
     },
     filter: function (links) {
         var selected = config.selected,
-            temp = [];
+            array = [];
         for (var x = 0, max = links.length; x < max; x++) {
             var link = links[x];
-            if (link.indexOf('?') !== -1) {
-                link = link.substring(0, link.indexOf('?'));
-            }
-            if (link.indexOf('#') !== -1) {
-                link = link.substring(0, link.indexOf('#'));
-            }
-            if (link.indexOf(host.url) !== -1) {
-                link = link.replace(host.url, '');
-            }
-            if (link.indexOf('..') !== -1) {
-                link = link.replace('..', '');
-            }
-            if (link[0] !== '/') {
-                link = link = '/' + link;
-            }
-            var test = (
-                temp.indexOf(link) === -1 &&
+            link = (link.indexOf('?') !== -1) ? link.substring(0, link.indexOf('?')) : link;
+            link = (link.indexOf('#') !== -1) ? link.substring(0, link.indexOf('#')) : link;
+            link = (link.indexOf(host.url) !== -1) ? link.replace(host.url, '') : link;
+            link = (link.indexOf('..') !== -1) ? link.replace('..', '') : link;
+            link = (link[0] !== '/') ? '/' + link : link;
+            if (
+                link &&
+                array.indexOf(link) === -1 &&
                 host.links.visited.indexOf(link) === -1 &&
                 host.links.cache.indexOf(link) === -1 &&
-                host.links.products.indexOf(link) === -1 && 
+                host.links.products.indexOf(link) === -1 &&
                 link.indexOf('http') === -1 &&
                 link.indexOf(':') === -1
-            );
-            if (test && link) {
+            ) {
+                var saveable = false;
                 if (selected.location === 'end') {
-                    var id = link.substring(link.lastIndexOf('/') + 1);
-                    if (selected.value === 'number') {
-                        test = (parseInt(id) !== 0);
-                    } else {
-                        test = (id !== selected.value);
-                    }
+                    var dir = link.substring(link.lastIndexOf('/') + 1);
+                    saveable = (selected.value === 'number') ? (parseInt(dir) > 0) : (dir !== selected.value);
                 } else if (selected.location === 'contains') {
-                    test = (link.indexOf(selected.value) !== -1);
+                    saveable = (link.indexOf(selected.value) !== -1);
                 }
-                if (test) {
+                if (saveable) {
                     host.links.products.push(link);
-                } else {
-                    temp.push(link);
                 }
+                array.push(link);
             }
         }
-        return temp;
+        return array;
     },
     cache: function (links) {
         host.links.cache = host.links.cache.concat(this.filter(links));
