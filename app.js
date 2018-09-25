@@ -39,7 +39,7 @@
                 print.message(host.links.queued + ' links left \n', host.links.cache.length, 'yellow');
                 scrape();
             } else {
-                print.message('\ncould not find any more links, complete!\n');
+                print.message('complete\n', 'complete', 'green');
             }
         });
     }

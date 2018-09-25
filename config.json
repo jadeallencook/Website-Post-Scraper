@@ -1,9 +1,10 @@
 {
     "host": {
-        "url": "https://www.coast-stores.com"
+        "url": "http://www.perfectlandingrentals.com"
     },
     "selected": {
-        "location": "end",
-        "value": "number"
-    }
+        "location": "contains",
+        "value": "property/"
+    },
+    "dev": true
 }
