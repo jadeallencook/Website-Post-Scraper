@@ -11,7 +11,7 @@ module.exports = {
         minutes = minutes / this.times.length;
         minutes = host.links.queued * minutes;
         minutes = minutes / 1000;
-        minutes = Math.floor(minutes / 60);
+        minutes = Math.ceil(minutes / 60);
         return minutes;
     },
     times: []

@@ -24,7 +24,7 @@
     links.import();
 
     // init
-    print.message('loading web-post-scraper', 'loading', 'yellow');
+    print.message('pinging server', 'pinging', 'yellow');
     casper.start(host.url).then(function () {
         print.message('successfully connected', 'successfully', 'green');
         links.cache(this.evaluate(links.extract));
