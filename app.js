@@ -1,7 +1,7 @@
 /*
-    Coast Stores Item Scraper 2018
-    Developed by Jade Allen Cook 
-    Written in ES5 & CasperJS
+    web post scraper 2018
+    developed by @jadeallencook
+    written with casperjs
 */
 
 (function () {
